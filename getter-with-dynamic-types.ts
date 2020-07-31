@@ -14,33 +14,37 @@ type WithParrots = {
   parrots: Array<string>
 }
 
-class ManGetter<ReturnType extends Man> {
+type ManRelationsT = {
   isWithCats: boolean
   isWithDogs: boolean
   isWithParrots: boolean
+}
 
-  constructor() {
-    this.isWithCats = false
-    this.isWithDogs = false
-    this.isWithParrots = false
-  }
+class ManGetter<ReturnType extends Man> {
+  constructor(
+    private relations: ManRelationsT = {
+      isWithCats: false,
+      isWithDogs: false,
+      isWithParrots: false,
+    },
+  ) {}
 
   withCats(): ManGetter<ReturnType & WithCats> {
-    this.isWithCats = true
+    this.relations.isWithCats = true
 
-    return new ManGetter<ReturnType & WithCats>()
+    return new ManGetter<ReturnType & WithCats>(this.relations)
   }
 
   withDogs(): ManGetter<ReturnType & WithDogs> {
-    this.isWithDogs = true
+    this.relations.isWithDogs = true
 
-    return new ManGetter<ReturnType & WithDogs>()
+    return new ManGetter<ReturnType & WithDogs>(this.relations)
   }
 
   withParrots(): ManGetter<ReturnType & WithParrots> {
-    this.isWithParrots = true
+    this.relations.isWithParrots = true
 
-    return new ManGetter<ReturnType & WithParrots>()
+    return new ManGetter<ReturnType & WithParrots>(this.relations)
   }
 
   exec(): ReturnType {
@@ -48,19 +52,19 @@ class ManGetter<ReturnType extends Man> {
       name: 'Яков',
     }
 
-    if (this.isWithDogs) {
+    if (this.relations.isWithDogs) {
       result = {
         ...result,
         dogs: ['Жужа'],
       }
     }
-    if (this.isWithCats) {
+    if (this.relations.isWithCats) {
       result = {
         ...result,
         cats: ['Мурка'],
       }
     }
-    if (this.isWithParrots) {
+    if (this.relations.isWithParrots) {
       result = {
         ...result,
         parrots: ['Кеша'],
@@ -73,7 +77,6 @@ class ManGetter<ReturnType extends Man> {
 
 const manGetter = new ManGetter()
 
-// type of man is changed depend on called 'with' methods
 const man = manGetter
   .withCats()
   .withParrots()
